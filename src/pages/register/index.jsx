@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex items-center justify-center h-full">
         <div className="container w-1/3 p-8">
-          <p className="text-3xl text-gray-700 font-bold mb-5">ToDo Login</p>
+          <p className="text-3xl text-gray-700 font-bold mb-5">ToDo Register</p>
 
           <form className="flex flex-col">
             <label className="block">
@@ -24,16 +24,25 @@ export default function Login() {
               type="password"
               className="form-input rounded-md leading-normal"
             />
+            <label className="block">
+              <span class="block font-medium text-slate-700 mt-3 mb-2">
+                Confirmation Password
+              </span>
+            </label>
+            <input
+              type="password"
+              className="form-input rounded-md leading-normal"
+            />
           </form>
 
           <div className="flex items-center mt-5 gap-x-1">
             <button className="rounded text-white bg-sky-500 py-1 px-5">
-              Login
+              Register
             </button>
             <p className="ml-1 text-sm text-gray-600 ">
-              Dont have account register&nbsp;
+              Have account? login&nbsp;
               <Link
-                to="/register"
+                to="/login"
                 className="underline text-blue-600 hover:text-sky-600"
               >
                 here

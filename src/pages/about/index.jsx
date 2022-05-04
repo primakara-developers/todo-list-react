@@ -6,7 +6,7 @@ export default function About() {
 
   return (
     <div className="flex items-center justify-center h-full">
-      <div className="container w-2/3 rounded-xl p-8  ">
+      <div className="container w-2/3 p-8  ">
         <p className="text-3xl text-gray-700 font-bold mb-5">About</p>
         <p className="text-gray-500 text-lg">
           React, Vite, and Tailwind CSS in action

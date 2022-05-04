@@ -10,12 +10,14 @@ import Layout from "./layout/Layout";
 import About from "./pages/about";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import Register from "./pages/register";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
