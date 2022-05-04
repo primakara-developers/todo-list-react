@@ -5,7 +5,7 @@ import Header from "../components/Header";
 export default function Layout() {
   return (
     <div className="flex flex-col h-screen">
-      <Header />
+      {/* <Header /> */}
       <main className="grow px-10">
         <Outlet />
       </main>

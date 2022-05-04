@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { LogoutIcon } from "@heroicons/react/solid";
 
 export default function Header() {
   return (
@@ -26,7 +27,7 @@ export default function Header() {
         <div className="text-sm lg:flex-grow">
           <Link
             to="/about"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block mt-4 lg:inline-block lg:mt-0 text-sky-200 hover:text-white mr-4"
           >
             About
           </Link>
@@ -34,8 +35,9 @@ export default function Header() {
         <div>
           <Link
             to="/login"
-            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+            className="flex font-semibold items-center text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:bg-red-500 mt-4 lg:mt-0"
           >
+            <LogoutIcon className="w-5 h-5 text-white mr-1" />
             Logout
           </Link>
         </div>
