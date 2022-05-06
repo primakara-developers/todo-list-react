@@ -28,6 +28,11 @@ export default function Home() {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  function handleCloseDialog(value) {
+    setIsDialogOpen(value);
+  }
+
   return (
     <div className="flex justify-center h-full ">
       <div className="container w-1/3 p-8">
@@ -55,6 +60,7 @@ export default function Home() {
 
         <div className="mt-8 mb-10">
           {/* Start Card content */}
+          {/*TODO: Move card to component*/}
           {todos.map((todo) => (
             <div
               key={todo.id}
@@ -62,7 +68,7 @@ export default function Home() {
             >
               <p className="text-gray-500 text-lg">{todo.title}</p>
               <div className="flex gap-x-1.5">
-                <button className="rounded text-white bg-teal-500 p-1.5">
+                <button onClick={() => setIsDialogOpen(true)} className="rounded text-white bg-teal-500 p-1.5">
                   <PencilIcon className="h-4 w-4 text-white" />
                 </button>
                 <button
@@ -77,7 +83,7 @@ export default function Home() {
           {/* End Card content */}
         </div>
       </div>
-      <Dialog />
+      <Dialog show={isDialogOpen} closeDialog={handleCloseDialog}/>
     </div>
   );
 }

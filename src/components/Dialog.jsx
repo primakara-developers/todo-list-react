@@ -1,6 +1,13 @@
 import { PencilIcon } from "@heroicons/react/solid";
+import { useState, useEffect } from "react";
 
-export default function Dialog() {
+export default function Dialog(props) {
+  const [editTodo, setEditTodo] = useState()
+
+  if (!props.show) {
+    return null
+  }
+
   return (
     <div
       className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center"
@@ -17,12 +24,14 @@ export default function Dialog() {
               <input
                 type="text"
                 className="form-input rounded-md w-full mt-3"
+                value={editTodo}
+                onChange={(e) => setEditTodo(e.target.value)}
               />
             </div>
           </div>
 
           <div className="flex justify-end items-center mt-3">
-            <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md">
+            <button onClick={() => props.closeDialog(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md">
               Cancel
             </button>
 
