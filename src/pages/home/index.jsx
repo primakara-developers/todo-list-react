@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { TrashIcon, PencilIcon, LogoutIcon } from "@heroicons/react/solid";
+import Dialog from "../../components/Dialog";
 
 export default function Home() {
   const [todos, setTodos] = useState([
@@ -76,6 +77,7 @@ export default function Home() {
           {/* End Card content */}
         </div>
       </div>
+      <Dialog />
     </div>
   );
 }
