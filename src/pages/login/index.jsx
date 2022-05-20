@@ -1,17 +1,31 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../../api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    if (email && password) {
-      navigate("/");
-    } else {
-      alert("Isi kolom terlebih dahulu!");
+    try {
+      const response = await api("/users/login", {
+        method: "POST",
+        body: {
+          email,
+          password,
+        },
+      });
+      console.log(email, password);
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        alert("Berhasil login");
+        //redirect to dashboard page
+        navigate("/");
+      }
+    } catch (err) {
+      alert(err.data.message);
     }
   }
 

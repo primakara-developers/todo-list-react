@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { TrashIcon, PencilIcon, LogoutIcon } from "@heroicons/react/solid";
+import { LogoutIcon } from "@heroicons/react/solid";
 import Dialog from "../../components/Dialog";
+import Card from "../../components/Card";
+import api from "../../api";
 
 export default function Home() {
-  const [todos, setTodos] = useState([
-    { id: 1, title: "Todo1" },
-    { id: 2, title: "Todo2" },
-    { id: 3, title: "Todo3" },
-    { id: 4, title: "Todo4" },
-    { id: 5, title: "Todo5" },
-  ]);
+  const [todos, setTodos] = useState([]);
+  async function getTodos() {
+    const response = await api("/todos", {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+    setTodos(response);
+    console.log(response);
+  }
+
+  useEffect(() => {
+    getTodos();
+  }, []);
 
   const [newTodo, setNewTodo] = useState("");
   function handleAdd(e) {
@@ -22,10 +32,6 @@ export default function Home() {
       ]);
       setNewTodo("");
     }
-  }
-
-  function handleDelete(id) {
-    setTodos(todos.filter((todo) => todo.id !== id));
   }
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -60,30 +66,18 @@ export default function Home() {
 
         <div className="mt-8 mb-10">
           {/* Start Card content */}
-          {/*TODO: Move card to component*/}
           {todos.map((todo) => (
-            <div
+            <Card
               key={todo.id}
-              className="flex justify-between items-center gap-x-2.5 py-1.5 px-3 border-2 border-grey-500 rounded mb-2"
-            >
-              <p className="text-gray-500 text-lg">{todo.title}</p>
-              <div className="flex gap-x-1.5">
-                <button onClick={() => setIsDialogOpen(true)} className="rounded text-white bg-teal-500 p-1.5">
-                  <PencilIcon className="h-4 w-4 text-white" />
-                </button>
-                <button
-                  onClick={() => handleDelete(todo.id)}
-                  className="rounded text-white bg-red-500 p-1.5"
-                >
-                  <TrashIcon className="h-4 w-4 text-white" />
-                </button>
-              </div>
-            </div>
+              id={todo.id}
+              title={todo.title}
+              openDialog={() => setIsDialogOpen(true)}
+            />
           ))}
           {/* End Card content */}
         </div>
       </div>
-      <Dialog show={isDialogOpen} closeDialog={handleCloseDialog}/>
+      <Dialog show={isDialogOpen} closeDialog={handleCloseDialog} />
     </div>
   );
 }

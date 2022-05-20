@@ -1,11 +1,11 @@
 import { PencilIcon } from "@heroicons/react/solid";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Dialog(props) {
-  const [editTodo, setEditTodo] = useState()
+  const [editTodo, setEditTodo] = useState();
 
   if (!props.show) {
-    return null
+    return null;
   }
 
   return (
@@ -31,7 +31,10 @@ export default function Dialog(props) {
           </div>
 
           <div className="flex justify-end items-center mt-3">
-            <button onClick={() => props.closeDialog(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md">
+            <button
+              onClick={() => props.closeDialog(false)}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md"
+            >
               Cancel
             </button>
 
