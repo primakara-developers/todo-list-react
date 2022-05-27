@@ -29,18 +29,39 @@ export default function Home() {
   }, []);
 
   const [newTodo, setNewTodo] = useState("");
-  function handleAdd(e) {
+  async function handleAdd(e) {
     e.preventDefault();
+
     if (newTodo) {
-      setTodos([
-        ...todos,
-        { id: todos[todos.length - 1].id + 1, title: newTodo },
-      ]);
-      setNewTodo("");
+      try {
+        MySwal.showLoading();
+        await api("/todos", {
+          method: "POST",
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          body: {
+            title: newTodo,
+          },
+        });
+        getTodos();
+        MySwal.close();
+        setNewTodo("");
+      } catch {
+        MySwal.fire({
+          title: "Ada error",
+        });
+      }
     }
   }
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [todoData, setTodoData] = useState({ id: "", title: "" });
+  function handleOpenDialog(value, data) {
+    setIsDialogOpen(value);
+    setTodoData({ id: data.id, title: data.title });
+  }
+
   function handleCloseDialog(value) {
     setIsDialogOpen(value);
   }
@@ -83,13 +104,21 @@ export default function Home() {
               key={todo.id}
               id={todo.id}
               title={todo.title}
-              openDialog={() => setIsDialogOpen(true)}
+              openDialog={() =>
+                handleOpenDialog(true, { id: todo.id, title: todo.title })
+              }
+              refresh={getTodos}
             />
           ))}
           {/* End Card content */}
         </div>
       </div>
-      <Dialog show={isDialogOpen} closeDialog={handleCloseDialog} />
+      <Dialog
+        show={isDialogOpen}
+        closeDialog={handleCloseDialog}
+        todo={todoData}
+        refresh={getTodos}
+      />
     </div>
   );
 }

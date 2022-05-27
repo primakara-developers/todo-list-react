@@ -1,10 +1,17 @@
 import { TrashIcon, PencilIcon } from "@heroicons/react/solid";
-
-function handleDelete(id) {
-  console.log(id);
-}
+import api from "../api";
 
 export default function Card(props) {
+  async function handleDelete(id) {
+    await api(`/todos/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+    props.refresh();
+  }
+
   return (
     <div
       key={props.id}
