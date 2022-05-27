@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LogoutIcon } from "@heroicons/react/solid";
 import Dialog from "../../components/Dialog";
 import Card from "../../components/Card";
 import api from "../../api";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function Home() {
+  const navigate = useNavigate();
+  const MySwal = withReactContent(Swal);
+
   const [todos, setTodos] = useState([]);
   async function getTodos() {
+    MySwal.showLoading();
     const response = await api("/todos", {
       method: "GET",
       headers: {
@@ -15,7 +21,7 @@ export default function Home() {
       },
     });
     setTodos(response);
-    console.log(response);
+    MySwal.close();
   }
 
   useEffect(() => {
@@ -39,14 +45,20 @@ export default function Home() {
     setIsDialogOpen(value);
   }
 
+  function logout() {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
+
   return (
     <div className="flex justify-center h-full ">
       <div className="container w-1/3 p-8">
         <div className="flex items-center justify-between mt-10 mb-14">
           <p className="text-3xl text-gray-700 font-bold">ToDo List</p>
-          <Link to="/login">
-            <LogoutIcon className="w-8 h-8 text-gray-700 hover:text-red-500 cursor-pointer" />
-          </Link>
+          <LogoutIcon
+            className="w-8 h-8 text-gray-700 hover:text-red-500 cursor-pointer"
+            onClick={logout}
+          />
         </div>
         <form onSubmit={(e) => handleAdd(e)}>
           <input

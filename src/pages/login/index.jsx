@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
+  const MySwal = withReactContent(Swal);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
   async function handleLogin(e) {
     e.preventDefault();
+    MySwal.showLoading();
     try {
       const response = await api("/users/login", {
         method: "POST",
@@ -17,15 +23,20 @@ export default function Login() {
           password,
         },
       });
-      console.log(email, password);
       if (response.token) {
         localStorage.setItem("token", response.token);
-        alert("Berhasil login");
-        //redirect to dashboard page
-        navigate("/");
+        MySwal.close();
+        MySwal.fire({
+          confirmButtonColor: "#0ea5e9",
+          title: <p>Login Berhasil</p>,
+        }).then(() => {
+          navigate("/");
+          console.log(navigate("/"));
+        });
       }
     } catch (err) {
       alert(err.data.message);
+      MySwal.close();
     }
   }
 
