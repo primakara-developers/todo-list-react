@@ -11,7 +11,7 @@ export const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-export const LoginRoute = ({ children }) => {
+export const ProtectedLogin = ({ children }) => {
   const { token } = useContext(AuthContext);
 
   if (token) {

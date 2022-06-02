@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { AuthProvider } from "./AuthProvider";
-import { LoginRoute, ProtectedRoute } from "./ProtectedRoute";
+import { ProtectedRoute, ProtectedLogin } from "./ProtectedRoute";
 
 // Layout import
 const Layout = lazy(() => import("./layout/Layout"));
@@ -23,11 +23,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route
             path="/login"
             element={
-              <LoginRoute>
+              <ProtectedLogin>
                 <Suspense fallback={<></>}>
                   <Login />
                 </Suspense>
-              </LoginRoute>
+              </ProtectedLogin>
             }
           ></Route>
           <Route

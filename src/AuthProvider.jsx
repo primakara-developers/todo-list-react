@@ -5,14 +5,12 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  const handleLogin = async () => {
-    //TODO: PASS `RESPONSE.TOKEN`FROM LOGIN PAGE (LOGIN FUNC) TO THIS FUNCTION
-    localStorage.setItem("token", "sdhdhsdshdsdsdsd");
+  const handleLogin = async (val) => {
+    localStorage.setItem("token", val);
     const token = localStorage.getItem("token");
     setToken(token);
-    console.log(token);
     navigate("/");
   };
 

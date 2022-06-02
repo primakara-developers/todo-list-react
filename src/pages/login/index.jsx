@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../../api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -11,8 +11,6 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -26,9 +24,8 @@ export default function Login() {
         },
       });
       if (response.token) {
-        localStorage.setItem("token", response.token);
+        onLogin(response.token);
         MySwal.close();
-        navigate("/");
       }
     } catch (err) {
       alert(err.data.message);
@@ -86,12 +83,6 @@ export default function Login() {
           </form>
 
           <p className="text-gray-400 mt-8 text-left">Primdev 2022</p>
-          <button
-            className="rounded text-white bg-sky-500 py-1 px-5"
-            onClick={onLogin}
-          >
-            Set
-          </button>
         </div>
       </div>
     </div>
