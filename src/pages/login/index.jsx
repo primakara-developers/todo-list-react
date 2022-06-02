@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import AuthContext from "../../AuthProvider";
 
 export default function Login() {
+  const { onLogin } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
 
   const [email, setEmail] = useState("");
@@ -26,13 +28,7 @@ export default function Login() {
       if (response.token) {
         localStorage.setItem("token", response.token);
         MySwal.close();
-        MySwal.fire({
-          confirmButtonColor: "#0ea5e9",
-          title: <p>Login Berhasil</p>,
-        }).then(() => {
-          navigate("/");
-          console.log(navigate("/"));
-        });
+        navigate("/");
       }
     } catch (err) {
       alert(err.data.message);
@@ -90,6 +86,12 @@ export default function Login() {
           </form>
 
           <p className="text-gray-400 mt-8 text-left">Primdev 2022</p>
+          <button
+            className="rounded text-white bg-sky-500 py-1 px-5"
+            onClick={onLogin}
+          >
+            Set
+          </button>
         </div>
       </div>
     </div>

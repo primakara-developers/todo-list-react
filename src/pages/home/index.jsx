@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoutIcon } from "@heroicons/react/solid";
 import Dialog from "../../components/Dialog";
@@ -6,8 +6,10 @@ import Card from "../../components/Card";
 import api from "../../api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import AuthContext from "../../AuthProvider";
 
 export default function Home() {
+  const { onLogout } = useContext(AuthContext);
   const navigate = useNavigate();
   const MySwal = withReactContent(Swal);
 
@@ -66,11 +68,6 @@ export default function Home() {
     setIsDialogOpen(value);
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }
-
   return (
     <div className="flex justify-center h-full ">
       <div className="container w-1/3 p-8">
@@ -78,7 +75,7 @@ export default function Home() {
           <p className="text-3xl text-gray-700 font-bold">ToDo List</p>
           <LogoutIcon
             className="w-8 h-8 text-gray-700 hover:text-red-500 cursor-pointer"
-            onClick={logout}
+            onClick={onLogout}
           />
         </div>
         <form onSubmit={(e) => handleAdd(e)}>

@@ -1,52 +1,51 @@
 import { StrictMode, Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { AuthProvider } from "./AuthProvider";
+import { LoginRoute, ProtectedRoute } from "./ProtectedRoute";
 
 // Layout import
 const Layout = lazy(() => import("./layout/Layout"));
 
 // Components import
-const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
-const About = lazy(() => import("./pages/about"));
 const Home = lazy(() => import("./pages/home"));
 const Login = lazy(() => import("./pages/login"));
 const Register = lazy(() => import("./pages/register"));
+const About = lazy(() => import("./pages/about"));
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <Suspense fallback={<></>}>
-              <Login />
-            </Suspense>
-          }
-        ></Route>
-        <Route
-          path="/register"
-          element={
-            <Suspense fallback={<></>}>
-              <Register />
-            </Suspense>
-          }
-        ></Route>
-        <Route
-          path="/"
-          element={
-            <Suspense fallback={<></>}>
-              <Layout />
-            </Suspense>
-          }
-        >
+      <AuthProvider>
+        <Routes>
           <Route
+            path="/login"
+            element={
+              <LoginRoute>
+                <Suspense fallback={<></>}>
+                  <Login />
+                </Suspense>
+              </LoginRoute>
+            }
+          ></Route>
+          <Route
+            path="/register"
             element={
               <Suspense fallback={<></>}>
-                <ProtectedRoute />
+                <Register />
               </Suspense>
+            }
+          ></Route>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Suspense fallback={<></>}>
+                  <Layout />
+                </Suspense>
+              </ProtectedRoute>
             }
           >
             <Route
@@ -66,8 +65,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               }
             ></Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );
