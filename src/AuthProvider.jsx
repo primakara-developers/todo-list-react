@@ -7,14 +7,13 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  const handleLogin = async (val) => {
+  const onLogin = (val) => {
     localStorage.setItem("token", val);
-    const token = localStorage.getItem("token");
-    setToken(token);
+    setToken(localStorage.getItem("token"));
     navigate("/");
   };
 
-  const handleLogout = () => {
+  const onLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
     navigate("/login");
@@ -22,8 +21,8 @@ export function AuthProvider({ children }) {
 
   const auth = {
     token,
-    onLogin: handleLogin,
-    onLogout: handleLogout,
+    onLogin,
+    onLogout,
   };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
