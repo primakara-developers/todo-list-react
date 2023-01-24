@@ -1,34 +1,69 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { TrashIcon, PencilIcon, LogoutIcon } from "@heroicons/react/solid";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { LogoutIcon } from "@heroicons/react/solid";
 import Dialog from "../../components/Dialog";
+import Card from "../../components/Card";
+import api from "../../api";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import AuthContext from "../../AuthProvider";
 
 export default function Home() {
-  const [todos, setTodos] = useState([
-    { id: 1, title: "Todo1" },
-    { id: 2, title: "Todo2" },
-    { id: 3, title: "Todo3" },
-    { id: 4, title: "Todo4" },
-    { id: 5, title: "Todo5" },
-  ]);
+  const { onLogout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const MySwal = withReactContent(Swal);
+
+  const [todos, setTodos] = useState([]);
+  async function getTodos() {
+    MySwal.showLoading();
+    const response = await api("/todos", {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+    setTodos(response);
+    MySwal.close();
+  }
+
+  useEffect(() => {
+    getTodos();
+  }, []);
 
   const [newTodo, setNewTodo] = useState("");
-  function handleAdd(e) {
+  async function handleAdd(e) {
     e.preventDefault();
+
     if (newTodo) {
-      setTodos([
-        ...todos,
-        { id: todos[todos.length - 1].id + 1, title: newTodo },
-      ]);
-      setNewTodo("");
+      try {
+        MySwal.showLoading();
+        await api("/todos", {
+          method: "POST",
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          body: {
+            title: newTodo,
+          },
+        });
+        getTodos();
+        MySwal.close();
+        setNewTodo("");
+      } catch {
+        MySwal.fire({
+          title: "Ada error",
+        });
+      }
     }
   }
 
-  function handleDelete(id) {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [todoData, setTodoData] = useState({ id: "", title: "" });
+  function handleOpenDialog(value, data) {
+    setIsDialogOpen(value);
+    setTodoData({ id: data.id, title: data.title });
   }
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   function handleCloseDialog(value) {
     setIsDialogOpen(value);
   }
@@ -38,9 +73,10 @@ export default function Home() {
       <div className="container w-1/3 p-8">
         <div className="flex items-center justify-between mt-10 mb-14">
           <p className="text-3xl text-gray-700 font-bold">ToDo List</p>
-          <Link to="/login">
-            <LogoutIcon className="w-8 h-8 text-gray-700 hover:text-red-500 cursor-pointer" />
-          </Link>
+          <LogoutIcon
+            className="w-8 h-8 text-gray-700 hover:text-red-500 cursor-pointer"
+            onClick={onLogout}
+          />
         </div>
         <form onSubmit={(e) => handleAdd(e)}>
           <input
@@ -60,30 +96,26 @@ export default function Home() {
 
         <div className="mt-8 mb-10">
           {/* Start Card content */}
-          {/*TODO: Move card to component*/}
           {todos.map((todo) => (
-            <div
+            <Card
               key={todo.id}
-              className="flex justify-between items-center gap-x-2.5 py-1.5 px-3 border-2 border-grey-500 rounded mb-2"
-            >
-              <p className="text-gray-500 text-lg">{todo.title}</p>
-              <div className="flex gap-x-1.5">
-                <button onClick={() => setIsDialogOpen(true)} className="rounded text-white bg-teal-500 p-1.5">
-                  <PencilIcon className="h-4 w-4 text-white" />
-                </button>
-                <button
-                  onClick={() => handleDelete(todo.id)}
-                  className="rounded text-white bg-red-500 p-1.5"
-                >
-                  <TrashIcon className="h-4 w-4 text-white" />
-                </button>
-              </div>
-            </div>
+              id={todo.id}
+              title={todo.title}
+              openDialog={() =>
+                handleOpenDialog(true, { id: todo.id, title: todo.title })
+              }
+              refresh={getTodos}
+            />
           ))}
           {/* End Card content */}
         </div>
       </div>
-      <Dialog show={isDialogOpen} closeDialog={handleCloseDialog}/>
+      <Dialog
+        show={isDialogOpen}
+        closeDialog={handleCloseDialog}
+        todo={todoData}
+        refresh={getTodos}
+      />
     </div>
   );
 }

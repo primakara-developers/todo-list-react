@@ -1,17 +1,35 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import api from "../../api";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import AuthContext from "../../AuthProvider";
 
 export default function Login() {
+  const { onLogin } = useContext(AuthContext);
+  const MySwal = withReactContent(Swal);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    if (email && password) {
-      navigate("/");
-    } else {
-      alert("Isi kolom terlebih dahulu!");
+    MySwal.showLoading();
+    try {
+      const response = await api("/users/login", {
+        method: "POST",
+        body: {
+          email,
+          password,
+        },
+      });
+      if (response.token) {
+        onLogin(response.token);
+        MySwal.close();
+      }
+    } catch (err) {
+      alert(err.data.message);
+      MySwal.close();
     }
   }
 

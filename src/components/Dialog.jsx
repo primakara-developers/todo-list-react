@@ -1,11 +1,43 @@
 import { PencilIcon } from "@heroicons/react/solid";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import api from "../api";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function Dialog(props) {
-  const [editTodo, setEditTodo] = useState()
+  const MySwal = withReactContent(Swal);
+  const [editTodo, setEditTodo] = useState("");
+
+  useEffect(() => {
+    setEditTodo(props.todo.title);
+  }, [props.todo.title]);
+
+  async function handleEditTodo(e) {
+    e.preventDefault();
+    MySwal.showLoading();
+    try {
+      await api(`/todos/${props.todo.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        body: {
+          title: editTodo,
+        },
+      });
+      MySwal.close();
+      props.closeDialog(false);
+      props.refresh();
+    } catch {
+      MySwal.fire({
+        title: "Ada error",
+      });
+      MySwal.close();
+    }
+  }
 
   if (!props.show) {
-    return null
+    return null;
   }
 
   return (
@@ -31,11 +63,17 @@ export default function Dialog(props) {
           </div>
 
           <div className="flex justify-end items-center mt-3">
-            <button onClick={() => props.closeDialog(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md">
+            <button
+              onClick={() => props.closeDialog(false)}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md"
+            >
               Cancel
             </button>
 
-            <button className="px-4 py-2 ml-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-md">
+            <button
+              className="px-4 py-2 ml-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-md"
+              onClick={(e) => handleEditTodo(e)}
+            >
               Edit
             </button>
           </div>
